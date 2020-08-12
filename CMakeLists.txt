@@ -139,9 +139,9 @@ endif ( )
 # Create dynamic library
 add_library ( liblua SHARED ${SRC_LIB} ${LUA_DLL_RC} ${LUA_DEF} )
 target_link_libraries ( liblua ${LIBS} )
-set_target_properties ( liblua PROPERTIES OUTPUT_NAME lua CLEAN_DIRECT_OUTPUT 1 )
+set_target_properties ( liblua PROPERTIES OUTPUT_NAME lua51 CLEAN_DIRECT_OUTPUT 1 )
 if ( LUA_BUILD_AS_DLL )
-  set_target_properties ( liblua PROPERTIES COMPILE_DEFINITIONS LUA_BUILD_AS_DLL )
+  set_target_properties ( liblua PROPERTIES COMPILE_DEFINITIONS LUA_BUILD_AS_DLL=1 )
 endif ( )
 
 # Create static library, this is needed to compile luac in the 5.1.x Lua series
@@ -149,12 +149,12 @@ add_library ( liblua_static STATIC ${SRC_LIB} )
 target_link_libraries ( liblua_static ${LIBS} )
 
 add_executable ( lua ${SRC_LUA} ${LUA_RC} )
-target_link_libraries ( lua liblua )
+target_link_libraries ( lua liblua_static )
 
 # On windows a variant of the lua interpreter without console output needs to be built
 if ( LUA_BUILD_WLUA )
   add_executable ( wlua WIN32 src/wmain.c ${SRC_LUA} ${LUA_RC} )
-  target_link_libraries ( wlua liblua )
+  target_link_libraries ( wlua liblua_static )
   install_executable ( wlua )
 endif ( )
 
